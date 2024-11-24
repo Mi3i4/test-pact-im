@@ -21,53 +21,53 @@ RSpec.describe User, type: :model do
 
   describe 'validations' do
     it 'is valid with valid attributes' do
-      user = User.build(user_params)
+      user = described_class.build(user_params)
       expect(user).to be_valid
     end
 
     it 'is not valid without a name' do
-      user = User.build(name: nil)
+      user = described_class.build(name: nil)
       expect(user).to_not be_valid
     end
 
     it 'is not valid without a surname' do
-      user = User.build(surname: nil)
+      user = described_class.build(surname: nil)
       expect(user).to_not be_valid
     end
 
     it 'is not valid without a patronymic' do
-      user = User.build(patronymic: nil)
+      user = described_class.build(patronymic: nil)
       expect(user).to_not be_valid
     end
 
     it 'is not valid without a nationality' do
-      user = User.build(nationality: nil)
+      user = described_class.build(nationality: nil)
       expect(user).to_not be_valid
     end
 
     it 'is not valid without a country' do
-      user = User.build(country: nil)
+      user = described_class.build(country: nil)
       expect(user).to_not be_valid
     end
 
     it 'is not valid without an email' do
-      user = User.build(email: nil)
+      user = described_class.build(email: nil)
       expect(user).to_not be_valid
     end
 
     it 'is not valid if email already exists' do
-      User.create(user_params)
-      user = User.build(user_params)
+      described_class.create(user_params)
+      user = described_class.build(user_params)
       expect(user).to_not be_valid
     end
 
     it 'is not valid if age is not within the valid range' do
-      user = User.build(age: 100)
+      user = described_class.build(age: 91)
       expect(user).to_not be_valid
     end
 
     it 'is not valid if gender is not male or female' do
-      user = User.build(gender: 'dog')
+      user = described_class.build(gender: 'dog')
       expect(user).to_not be_valid
     end
   end
