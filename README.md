@@ -1,24 +1,37 @@
-# README
+# Readme test-pact-im
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+### Clone project via ssh
 
-Things you may want to cover:
+`git clone git@github.com:Mi3i4/test-pact-im.git`
 
-* Ruby version
+### Create `.env` file with fields
 
-* System dependencies
+```dotenv
+RAILS_ENV=development
+POSTGRES_USER=db_user
+POSTGRES_PASSWORD=db_password
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+```
 
-* Configuration
+### Dependencies
+```
+ruby "3.3.1"
+"rails", "~> 7.1.5"
+"pg", "~> 1.1"
+```
+### Install Gems
 
-* Database creation
+`bundle install`
 
-* Database initialization
+### Create db
 
-* How to run the test suite
+`rails db:create`
 
-* Services (job queues, cache servers, search engines, etc.)
+### Run migrations
 
-* Deployment instructions
+`rails db:migrate`
 
-* ...
+### Run tests
+
+`bundle exec rspec`

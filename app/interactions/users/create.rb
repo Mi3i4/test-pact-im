@@ -1,5 +1,4 @@
 class Users::Create < ActiveInteraction::Base
-  set_callback :validate, :before, -> { validate_user_params }
   set_callback :filter, :before, -> { create_full_name }
 
   hash :user_params do
@@ -15,6 +14,8 @@ class Users::Create < ActiveInteraction::Base
     array :interests, default: []
     array :skills, default: []
   end
+
+  validate :validate_user_params
 
   def execute
     return nil if errors.any?
