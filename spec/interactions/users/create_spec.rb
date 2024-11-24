@@ -1,31 +1,65 @@
 require 'rails_helper'
 
 RSpec.describe Users::Create, type: :interaction do
-  let(:valid_params) do
+  let(:user_params) {
     {
-      name: 'John', surname: 'Doe', patronymic: 'Smith', email: 'john.doe@example.com',
-      age: 25, nationality: 'American', country: 'USA', gender: 'male', interests: %w[Sports Reading],
+      name: 'Alex',
+      surname: 'Coder',
+      patronymic: 'Some',
+      email: 'ac@mail.ru',
+      age: 25,
+      nationality: 'russian',
+      country: 'Russia',
+      gender: 'male',
+      interests: %w[Sports Yoga Meditation],
       skills: %w[Ruby, JavaScript]
     }
-  end
+  }
 
   it 'creates a user successfully with valid params' do
-    result = Users::Create.run(valid_params)
+    result = Users::Create.run(user_params: user_params)
     expect(result.valid?).to be_truthy
     expect(result.result).to be_a(User)
   end
 
   it 'fails if required params are missing' do
-    invalid_params = valid_params.except(:name)
-    result = Users::Create.run(invalid_params)
+    invalid_params = user_params.except(:surname)
+    result = Users::Create.run(user_params: invalid_params)
     expect(result.valid?).to be_falsey
-    expect(result.errors.full_messages).to include('Name is required')
+    expect(result.errors.full_messages).to include('User params surname is required')
   end
 
   it 'associates interests and skills' do
-    result = Users::Create.run(valid_params)
+    result = Users::Create.run(user_params: user_params)
     user = result.result
-    expect(user.interests.count).to eq(2)
+    expect(user.interests.count).to eq(3)
     expect(user.skills.count).to eq(2)
+  end
+
+  it 'creates valid full_name' do
+    result = Users::Create.run(user_params: user_params)
+    user = result.result
+    expect(user.full_name).to eq('Coder Alex Some')
+  end
+
+  it 'fails if email already exists' do
+    User.create(user_params.except(:skills, :interests))
+    result = Users::Create.run(user_params: user_params)
+    expect(result.valid?).to be_falsey
+    expect(result.errors.full_messages).to include('Email is already taken')
+  end
+
+  it 'fails if age is not within the valid range' do
+    invalid_params = user_params.except(:skills, :interests).merge( { age: 91 } )
+    result = Users::Create.run(user_params: invalid_params)
+    expect(result.valid?).to be_falsey
+    expect(result.errors.full_messages).to include('Age is not in (1..90) range')
+  end
+
+  it 'fails if gender is not male or female' do
+    invalid_params = user_params.except(:skills, :interests).merge( { gender: 'dog' } )
+    result = Users::Create.run(user_params: invalid_params)
+    expect(result.valid?).to be_falsey
+    expect(result.errors.full_messages).to include('Gender is should be male or female')
   end
 end
